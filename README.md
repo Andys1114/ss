@@ -7,11 +7,12 @@
 在项目根目录运行：
 
 ```powershell
+git submodule update --init --recursive
 npm ci
 npm run tauri dev
 ```
 
-依赖已安装时只运行第二条。Vite 开发端口固定为 `1420`；如果之前单独启动了 `npm run dev`，先在该终端按 Ctrl+C，避免端口冲突。
+新克隆项目时需要初始化 `rules` 子模块，也可使用 `git clone --recurse-submodules https://github.com/Andys1114/ss.git`。规则和依赖已准备好时只运行 `npm run tauri dev`。Vite 开发端口固定为 `1420`；如果之前单独启动了 `npm run dev`，先在该终端按 Ctrl+C，避免端口冲突。
 
 只检查界面、不启动原生窗口：
 
@@ -41,6 +42,7 @@ npm run dev
 默认地址已配置为 [公共规则 JSON](https://rule.andys1114.cc.cd/search-rules.json)，保存在项目 `.env` 中；启动时后台检查，也可在设置中点击“检查规则更新”。2026-10-17 接入时，远端文件为 r1，低于内置 r4，因此保留 r4，不会降级。维护者下次发布应使用 r5 或更高版本。
 
 1. 维护 `rules/search-rules.json`。保留网站与规则 ID，每次发布增加 `revision`。
+   `rules` 是独立的规则仓库子模块：修改后先在规则仓库提交并推送，再在应用仓库提交更新后的 `rules` 引用。应用构建取该引用固定的提交作为随包快照，运行时在线更新仍使用公共 HTTPS 地址。
 2. 运行校验：
 
    ```powershell
@@ -83,6 +85,7 @@ Windows 开发需要 Node 24 LTS、Rust stable MSVC、C++ Build Tools、Windows 
 在 Mac 上准备 Node 24、Rust stable 和 Xcode Command Line Tools；仅做桌面应用可运行 `xcode-select --install` 安装命令行工具，不需要 iOS 工具链。
 
 ```bash
+git submodule update --init --recursive
 npm ci
 npm run tauri dev
 npm run tauri build -- --config src-tauri/tauri.macos.conf.json
@@ -90,7 +93,7 @@ npm run tauri build -- --config src-tauri/tauri.macos.conf.json
 
 输出 `.app` 应用和 `.dmg`，位置在 `src-tauri/target/release/bundle`；指定 `--target` 时会多一层目标架构目录。当前配置使用 ad-hoc 签名，仅适合开发和测试，不包含 Developer ID 或公证。正式站外分发前应在 macOS 上处理 Developer ID 签名、公证和验签；不在 Windows 上交叉打包 macOS。参见 [Tauri macOS 签名指南](https://v2.tauri.app/distribute/sign/macos/)。
 
-`.github/workflows/desktop-build.yml` 为手动触发的 Windows x64、macOS Apple Silicon、macOS Intel 构建矩阵。上传仓库后，从 Actions 手动运行；默认使用同一公共规则地址，仓库变量 `RULES_URL` 可覆盖来源。工作流只上传安装包到 Actions Artifacts，不创建 Release、不发布软件、不配置付费签名。**目前没有实际运行远端 CI 或 macOS 构建。** macOS 构建、打包、Apple 签名与公证使用 Mac 或 macOS runner；窗口、Dock、多显示器和 DPI 行为仍需在目标设备实测。
+`.github/workflows/desktop-build.yml` 为手动触发的 Windows x64、macOS Apple Silicon、macOS Intel 构建矩阵。Checkout 会递归拉取规则子模块，安装依赖后先校验随包规则、运行测试，再构建。上传仓库后，从 Actions 手动运行；默认使用同一公共规则地址，仓库变量 `RULES_URL` 可覆盖来源。工作流只上传安装包到 Actions Artifacts，不创建 Release、不发布软件、不配置付费签名。首次 macOS CI 在测试阶段因规则子模块未取出而失败，已补齐 `.gitmodules` 和 Checkout 子模块选项；修复后的远端构建仍待运行确认。macOS 构建、打包、Apple 签名与公证使用 Mac 或 macOS runner；窗口、Dock、多显示器和 DPI 行为仍需在目标设备实测。
 
 ## 代码位置
 

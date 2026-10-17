@@ -23,6 +23,8 @@ jobs:
       VITE_RULES_URL: ${{ vars.RULES_URL || 'https://rule.andys1114.cc.cd/search-rules.json' }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          submodules: recursive
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
@@ -34,8 +36,8 @@ jobs:
         with:
           workspaces: src-tauri -> target
       - run: npm ci
-      - run: npm test
       - run: npm run validate:rules
+      - run: npm test
       - run: npm run tauri build -- --target ${{ matrix.target }} ${{ matrix.args }}
       - uses: actions/upload-artifact@v7
         with:

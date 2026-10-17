@@ -79,3 +79,11 @@
 - 按钮保留预览和收藏，名称过长时可通过悬停及无障碍标签查看全文；搜索内容和官网链接构造方式不变。
 - 46 项测试通过，新增入口在筛选及搜索卡片之前的顺序检查；类型检查和 Windows NSIS 打包通过。
 - 已检查最终原生界面：四个正方形入口同排居中，位于窗口中间偏上，名称和操作图标均可见；实际点击知网入口预览显示正确主页，并可关闭返回主界面。
+
+## Actions 规则子模块修复（2026-10-17）
+
+- 故障来源：应用提交 `ab38a5e` 的 macOS ARM job `117423687010`。`npm test` 阶段 5 个测试文件无法找到 `rules/search-rules.json`；Checkout 清理另报 `No url found for submodule path 'rules' in .gitmodules`，尚未进入原生编译。
+- `rules` 在应用仓库中是 mode `160000` 的 Git 子模块引用，固定到独立规则仓库 `Andys1114/rule` 的提交 `75ac08f`。原仓库缺少 `.gitmodules`，Checkout 也未启用子模块拉取。
+- 新增 `.gitmodules`，并为工作流 Checkout 配置 `submodules: recursive`。规则校验调整为测试之前执行，保留固定提交快照。
+- 在 `.setup/ci-submodule-check` 全新检出应用提交后，使用候选配置从真实规则远端成功初始化子模块；随包 r4 校验、46 项测试、类型检查和 Vite 前端构建全部通过。
+- 修复后的 macOS 原生构建及产物上传仍需在 GitHub macOS runner 上运行确认。
