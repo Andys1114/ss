@@ -1,0 +1,47 @@
+name: Desktop build
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            args: ''
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            args: '--config src-tauri/tauri.macos.conf.json'
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            args: '--config src-tauri/tauri.macos.conf.json'
+    runs-on: ${{ matrix.os }}
+    env:
+      VITE_RULES_URL: ${{ vars.RULES_URL || 'https://rule.andys1114.cc.cd/search-rules.json' }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+      - run: npm ci
+      - run: npm test
+      - run: npm run validate:rules
+      - run: npm run tauri build -- --target ${{ matrix.target }} ${{ matrix.args }}
+      - uses: actions/upload-artifact@v7
+        with:
+          name: scholar-rail-${{ matrix.target }}
+          path: |
+            src-tauri/target/${{ matrix.target }}/release/bundle/nsis/*.exe
+            src-tauri/target/${{ matrix.target }}/release/bundle/dmg/*.dmg
+          if-no-files-found: error
+          retention-days: 14

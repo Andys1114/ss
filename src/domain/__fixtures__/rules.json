@@ -1,0 +1,186 @@
+{
+  "format": "academic-search-rules",
+  "schemaVersion": 1,
+  "revision": 2,
+  "sites": [
+    {
+      "id": "pubmed",
+      "name": "PubMed",
+      "homepage": "https://pubmed.ncbi.nlm.nih.gov/",
+      "category": "生物医学",
+      "notes": "由 NCBI 提供。检索词及排序参数依据官方帮助文档；不读取或抓取检索结果。",
+      "searchRules": [
+        {
+          "id": "articles",
+          "name": "文献检索",
+          "mode": "query",
+          "baseUrl": "https://pubmed.ncbi.nlm.nih.gov/",
+          "fixedParams": [],
+          "fields": [
+            {
+              "id": "keyword",
+              "label": "关键词",
+              "param": "term",
+              "type": "text",
+              "required": true,
+              "defaultValue": "",
+              "placeholder": "输入关键词或完整检索式"
+            },
+            {
+              "id": "sort",
+              "label": "排序方式",
+              "param": "sort",
+              "type": "select",
+              "required": false,
+              "defaultValue": "relevance",
+              "options": [
+                {
+                  "label": "相关性优先",
+                  "value": "relevance"
+                },
+                {
+                  "label": "最新发表",
+                  "value": "pubdate"
+                },
+                {
+                  "label": "最新收录",
+                  "value": "date"
+                }
+              ]
+            }
+          ],
+          "verification": {
+            "status": "verified",
+            "checkedAt": "2026-10-17",
+            "method": "official-docs",
+            "referenceUrl": "https://pubmed.ncbi.nlm.nih.gov/help/#get-a-permalink-to-bookmark-or-share-your-search",
+            "notes": "官方说明支持 term、sort 查询参数；复杂表达式由用户完整输入。"
+          }
+        },
+        {
+          "id": "expression",
+          "name": "完整检索式",
+          "mode": "query",
+          "baseUrl": "https://pubmed.ncbi.nlm.nih.gov/",
+          "fixedParams": [],
+          "fields": [
+            {
+              "id": "expression",
+              "label": "PubMed 检索式",
+              "param": "term",
+              "type": "text",
+              "required": true,
+              "defaultValue": "",
+              "placeholder": "手动输入，例如 asthma AND review[pt]"
+            }
+          ],
+          "verification": {
+            "status": "verified",
+            "checkedAt": "2026-10-17",
+            "method": "official-docs",
+            "referenceUrl": "https://pubmed.ncbi.nlm.nih.gov/help/#get-a-permalink-to-bookmark-or-share-your-search",
+            "notes": "将用户手动编写的完整表达式作为 term 提交，不自动组合条件。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ieee-conferences",
+      "name": "IEEE Conferences",
+      "homepage": "https://conferences.ieee.org/",
+      "category": "会议",
+      "notes": "前往 IEEE 官方会议入口。URL 搜索参数尚未验证。",
+      "searchRules": []
+    },
+    {
+      "id": "cnki",
+      "name": "中国知网",
+      "homepage": "https://www.cnki.net/",
+      "category": "中文数据库",
+      "notes": "前往官方入口，在网站内手动检索。URL 搜索参数尚未验证。",
+      "searchRules": []
+    },
+    {
+      "id": "wanfang",
+      "name": "万方数据",
+      "homepage": "https://www.wanfangdata.com.cn/",
+      "category": "中文数据库",
+      "notes": "前往官方入口，在网站内手动检索。URL 搜索参数尚未验证。",
+      "searchRules": []
+    },
+    {
+      "id": "vip",
+      "name": "维普",
+      "homepage": "https://www.cqvip.com/",
+      "category": "中文数据库",
+      "notes": "前往官方入口，在网站内手动检索。URL 搜索参数尚未验证。",
+      "searchRules": []
+    },
+    {
+      "id": "wos",
+      "name": "Web of Science",
+      "homepage": "https://www.webofscience.com/",
+      "category": "学术数据库",
+      "notes": "可能需要机构权限。URL 搜索参数尚未验证。",
+      "searchRules": []
+    },
+    {
+      "id": "google",
+      "name": "Google",
+      "homepage": "https://www.google.com/",
+      "category": "通用搜索",
+      "notes": "前往 Google 官方入口；当前快照仅提供入口。",
+      "searchRules": []
+    },
+    {
+      "id": "bing",
+      "name": "Bing",
+      "homepage": "https://www.bing.com/",
+      "category": "通用搜索",
+      "notes": "前往 Bing 官方入口；当前快照仅提供入口。",
+      "searchRules": []
+    },
+    {
+      "id": "google-scholar",
+      "name": "Google Scholar（谷歌学术）",
+      "homepage": "https://scholar.google.com/",
+      "category": "综合学术搜索",
+      "notes": "可输入关键词、论文标题或完整参考文献；能否访问取决于当前网络环境。",
+      "searchRules": [
+        {
+          "id": "article-search",
+          "name": "搜文献",
+          "mode": "query",
+          "baseUrl": "https://scholar.google.com/scholar",
+          "fixedParams": [],
+          "fields": [
+            {
+              "id": "query",
+              "label": "关键词、标题或参考文献",
+              "param": "q",
+              "type": "text",
+              "required": true,
+              "defaultValue": "",
+              "placeholder": "输入关键词、论文标题或粘贴参考文献"
+            }
+          ],
+          "verification": {
+            "status": "verified",
+            "checkedAt": "2026-10-17",
+            "method": "official-docs",
+            "notes": "Google Scholar 官方博客明确给出 /scholar?q= 链接构造方式；官方搜索帮助说明关键词与标题检索。本条仅配置 q，不增加未核实的筛选参数。",
+            "referenceUrl": "https://scholar.googleblog.com/2016/01/quickly-lookup-references.html"
+          }
+        }
+      ]
+    },
+    {
+      "id": "arxiv",
+      "name": "arXiv",
+      "homepage": "https://arxiv.org/",
+      "category": "预印本",
+      "notes": "当前提供官网入口，请进入网站使用普通或高级检索；本批次尚未完成网页搜索 URL 参数确认，未将返回数据的 API 地址作为网页搜索入口。",
+      "searchRules": []
+    }
+  ]
+}
